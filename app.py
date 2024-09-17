@@ -12,5 +12,5 @@ def main(dotenv_ip: str):
     :return: None
     """
     service = BrokerMqtt(123, dotenv_ip) # Instancia do objeto (BrokerMQTT)
-    # check_status = service.checkStatus() # Checa o status do serviço (BrokerMQTT)
-    print(service) # Printa o valor do serviço (BrokerMQTT)
+    check_status = service.checkStatus() # Checa o status do serviço (BrokerMQTT)
+    print(check_status) # Printa o valor do serviço (BrokerMQTT)
