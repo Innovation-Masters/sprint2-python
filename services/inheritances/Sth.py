@@ -1,8 +1,8 @@
 from services.DockerServices import ServiceBase
 
 class Sth(ServiceBase):
-    def __init__(self, porta: int, graphDir: str, ip: str):
-        super().__init__(porta, ip, graphDir)
+    def __init__(self, ip: str, porta: int, serviceName: str):
+        super().__init__(ip, porta, serviceName)
 
     def createGraph(self) -> str:
         """
