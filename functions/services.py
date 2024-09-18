@@ -20,7 +20,7 @@ orion = Orion(dotenv_ip, 1026, "Orion")
 sth = Sth(dotenv_ip, 8666, "STH Comet")
 
 
-def main():
+def services():
     """
     Função para executar o código principal do programa
     :arg dotenv_ip: IP do servidor obtido através do arquivo .env
