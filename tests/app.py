@@ -1,7 +1,38 @@
+import requests
+import json
 import random
 import time
 
-possiveis_locais = [
+# Funções para requisitar dados da API de velocidade, umidade e temperatura
+def obter_dados(api_url, atributo):
+    try:
+        headers = {
+            'fiware-service': 'smart',
+            'fiware-servicepath': '/',
+            'accept': 'application/json'
+        }
+        response = requests.get(api_url, headers=headers)
+        response.raise_for_status()
+        dados = response.json()
+        valor = dados['value']
+        print(f"\n{atributo.capitalize()} atual: {valor}")
+        return valor
+    except requests.exceptions.RequestException as e:
+        print(f"Erro ao requisitar {atributo}: {e}")
+        return None
+
+def velocidade():
+    return obter_dados("http://{ip}/v2/entities/urn:ngsi-ld:Iot:003/attrs/speed", "velocidade")
+
+def umidade():
+    return obter_dados("http://{ip}/v2/entities/urn:ngsi-ld:Iot:003/attrs/humidity", "umidade")
+
+def temperatura():
+    return obter_dados("http://{ip}/v2/entities/urn:ngsi-ld:Iot:003/attrs/temperature", "temperatura")
+
+
+# Função para o simulador de viagens da Fórmula E
+destinos = [
     "Nova York, Estados Unidos", 
     "Berlim, Alemanha", 
     "Tóquio, Japão", 
@@ -13,196 +44,161 @@ possiveis_locais = [
     "Londres, Reino Unido"
 ]
 
-def sortear_local():
-    return random.choice(possiveis_locais)
+def sortear_destino():
+    return random.choice(destinos)
 
-local_sorteado = sortear_local()
+def solicitar_preferencias():
+    while True:
+        try:
+            preferencia_hotel = input("Você busca hotéis mais baratos ou mais luxuosos? (1-Baratos, 2-Luxuosos): ")
+            if preferencia_hotel == "1":
+                hotel_preco_base = 200
+                break
+            elif preferencia_hotel == "2":
+                hotel_preco_base = 600
+                break
+            else:
+                raise ValueError("Escolha inválida para hotel. Digite 1 ou 2.")
+        except ValueError as e:
+            print(e)
+    
+    while True:
+        try:
+            preferencia_passagem = input("Você prefere passagens mais econômicas ou mais confortáveis? (1-Econômica, 2-Confortável): ")
+            if preferencia_passagem == "1":
+                passagem_preco_base = 1500
+                break
+            elif preferencia_passagem == "2":
+                passagem_preco_base = 5000
+                break
+            else:
+                raise ValueError("Escolha inválida para passagem. Digite 1 ou 2.")
+        except ValueError as e:
+            print(e)
+    
+    return hotel_preco_base, passagem_preco_base
 
-def iniciar_programa():
-    print("="*50) 
+def iniciar_simulador_viagem():
+    destino = sortear_destino()
+    print("="*50)
     print("Simulador de Viagem - Fórmula E")
     print("="*50)
     time.sleep(2)
-    print(f"A próxima corrida será em {local_sorteado}")
+    print(f"A próxima corrida será em {destino}")
     print("="*50)
+    
+    hotel_preco_base, passagem_preco_base = solicitar_preferencias()
+    
+    hotel = encontrar_hotel(hotel_preco_base)
+    passagem = encontrar_passagem(passagem_preco_base)
+    transporte = simular_transporte()
+    ingresso = simular_ingressos()
+    exibir_total(hotel, passagem, transporte, ingresso)
 
-def menu_inicial():
-    while True:
-        print("\nMENU INICIAL")
-        print("1. Encontrar hotel ideal")
-        print("2. Encontrar passagens de avião")
-        print("3. Simular transporte no destino")
-        print("4. Simular ingressos para a corrida")
-        print("5. Exibir total de gastos")
-        print("6. Sair")
-        
-        try:
-            opcao = int(input("Insira uma opção: "))
-            if 1 <= opcao <= 6:
-                return opcao
-            else:
-                print("Opção inválida. Escolha um número entre 1 e 6.")
-        except ValueError:
-            print("Entrada inválida. Digite um número válido.")
 
-def encontrar_hotel():
-    preco_base_hotel = 400
-    preferencias = {
-        "piscina": 40,
-        "academia": 30,
-        "café da manhã": 60,
-        "wifi": 50,
-        "transporte": 80,
-        "sala de jogos": 35,
-        "estacionamento": 20
-    }
-    
-    print("\nResponda as seguintes perguntas para entendermos suas preferências.")
-    time.sleep(1)
-    print("Para adicionar a preferência, digite 's' (sim), caso contrário digite 'n' (não).\n")
-    
-    for item, valor in preferencias.items():
-        while True:
-            preferencia = input(f"Seu hotel ideal precisa ter {item}? (s/n): ").lower()
-            if preferencia in ['s', 'n']:
-                break
-            else:
-                print("Entrada inválida. Digite 's' para sim ou 'n' para não.") 
-        
-        if preferencia == "s":
-            preco_base_hotel += valor
-    
+# Funções para encontrar hotel, passagem, transporte e ingressos
+def encontrar_hotel(preco_base):
     while True:
         try:
-            dias = int(input("Quantos dias você pretende passar na viagem?: "))
-            break
-        except ValueError:
-            print("Insira um número válido de dias.")
-    
-    preco_final_hotel = preco_base_hotel * dias
-    
-    print(f"\nEm {dias} dias de viagem, você gastará R${preco_final_hotel:.2f} com hospedagem.")
-    time.sleep(2)
-    return preco_final_hotel
+            dias = int(input("Quantos dias de hospedagem?: "))
+            if dias <= 0:
+                raise ValueError("O número de dias deve ser maior que zero.")
+            total = preco_base * dias
+            print(f"\nCusto da hospedagem: R${total:.2f}")
+            return total
+        except ValueError as e:
+            print(f"Erro: {e}. Tente novamente.")
 
-def encontrar_passagem():
+def encontrar_passagem(preco_base):
     while True:
-        print("\nEscolha a classe da sua passagem:")
-        print("1. Econômica")
-        print("2. Executiva")
-        print("3. Primeira classe")
-        
         try:
-            opcao_passagem = int(input("Insira uma opção para suas passagens (1/2/3): "))
-            if opcao_passagem == 1:
-                preco_passagem = 3000 * 2
-                break
-            elif opcao_passagem == 2:
-                preco_passagem = 5000 * 2
-                break
-            elif opcao_passagem == 3:
-                preco_passagem = 7500 * 2
-                break
+            classe = int(input("Escolha a classe da passagem (1-Econômica, 2-Executiva, 3-Primeira classe): "))
+            if classe == 1:
+                preco = preco_base
+            elif classe == 2:
+                preco = preco_base * 2
+            elif classe == 3:
+                preco = preco_base * 3
             else:
-                print("Opção inválida. Escolha entre 1, 2 ou 3.")
-        except ValueError:
-            print("Entrada inválida. Insira um número válido.")
-    
-    print(f"Você gastará R${preco_passagem:.2f} com passagens de ida e volta.")
-    time.sleep(2)
-    return preco_passagem
+                raise ValueError("Classe inválida. Digite 1, 2 ou 3.")
+            print(f"Custo das passagens (ida e volta): R${preco * 2:.2f}")
+            return preco * 2
+        except ValueError as e:
+            print(f"Erro: {e}. Tente novamente.")
 
 def simular_transporte():
-    print("\nEscolha o meio de transporte:")
-    print("1. Alugar um carro (R$ 150 por dia)")
-    print("2. Usar transporte público (R$ 20 por dia)")
-    print("3. Andar de táxi ou ride-sharing (R$ 100 por dia)")
-    
     while True:
         try:
-            opcao_transporte = int(input("Escolha uma opção (1/2/3): "))
-            if opcao_transporte == 1:
-                preco_transporte = 150
-                meio_transporte = "Aluguel de carro"
-                break
-            elif opcao_transporte == 2:
-                preco_transporte = 20
-                meio_transporte = "Transporte público"
-                break
-            elif opcao_transporte == 3:
-                preco_transporte = 100
-                meio_transporte = "Táxi ou ride-sharing"
-                break
-            else:
-                print("Opção inválida. Escolha entre 1, 2 ou 3.")
-        except ValueError:
-            print("Entrada inválida. Insira um número válido.")
-    
-    while True:
-        try:
-            dias_transporte = int(input("Por quantos dias você usará o transporte?: "))
-            break
-        except ValueError:
-            print("Entrada inválida. Digite um número de dias válido.")
-    
-    custo_total_transporte = preco_transporte * dias_transporte
-    print(f"\nVocê escolheu {meio_transporte}. O custo total será R${custo_total_transporte:.2f}.")
-    time.sleep(2)
-    return custo_total_transporte
+            transporte = int(input("Escolha o meio de transporte durante a viagem (1-Carro alugado, 2-Transporte público, 3-Táxi): "))
+            if transporte not in [1, 2, 3]:
+                raise ValueError("Opção inválida. Digite 1, 2 ou 3.")
+            
+            dias = int(input("Por quantos dias?: "))
+            if dias <= 0:
+                raise ValueError("O número de dias deve ser maior que zero.")
+            
+            if transporte == 1:
+                custo_dia = 150
+            elif transporte == 2:
+                custo_dia = 20
+            elif transporte == 3:
+                custo_dia = 100
+
+            total = custo_dia * dias
+            print(f"Custo dos transporte: R${total:.2f}")
+            return total
+        except ValueError as e:
+            print(f"Erro: {e}. Tente novamente.")
 
 def simular_ingressos():
-    print("\nEscolha a categoria do ingresso para a corrida:")
-    print("1. Pista (R$ 200)")
-    print("2. Arquibancada (R$ 400)")
-    print("3. VIP (R$ 1000)")
-    
     while True:
         try:
-            opcao_ingresso = int(input("Escolha uma opção (1/2/3): "))
-            if opcao_ingresso == 1:
-                preco_ingresso = 200
-                break
-            elif opcao_ingresso == 2:
-                preco_ingresso = 400
-                break
-            elif opcao_ingresso == 3:
-                preco_ingresso = 1000
-                break
+            categoria = int(input("Escolha a categoria do ingresso (1-Meia, 2-Inteira, 3-VIP): "))
+            if categoria == 1:
+                preco = 200
+            elif categoria == 2:
+                preco = 400
+            elif categoria == 3:
+                preco = 1000
             else:
-                print("Opção inválida. Escolha entre 1, 2 ou 3.")
-        except ValueError:
-            print("Entrada inválida. Insira um número válido.")
-    
-    print(f"Você gastará R${preco_ingresso:.2f} pelo ingresso.")
-    time.sleep(2)
-    return preco_ingresso
+                raise ValueError("Categoria inválida. Digite 1, 2 ou 3.")
+            print(f"Custo dos ingressos: R${preco:.2f}")
+            return preco
+        except ValueError as e:
+            print(f"Erro: {e}. Tente novamente.")
 
-def exibir_total(hotel=0, passagem=0, transporte=0, ingresso=0):
+
+# Função para calcular e exibir total de gastos
+def exibir_total(hotel, passagem, transporte, ingresso):
     total = hotel + passagem + transporte + ingresso
-    print(f"\nTotal estimado de gastos: R${total:.2f}\n")
-    time.sleep(2)
+    print(f"\nTotal de gastos: R${total:.2f}")
 
-# Variáveis para acumular o valor total gasto em cada seção
-total_hotel = 0
-total_passagem = 0
-total_transporte = 0
-total_ingresso = 0
 
-iniciar_programa()
+# Menu principal
+def menu_principal():
+    while True:
+        print("\nMENU PRINCIPAL")
+        print("1. Visualizar Velocidade")
+        print("2. Visualizar Umidade")
+        print("3. Visualizar Temperatura")
+        print("4. Simulador de Viagem")
+        print("5. Sair")
+        opcao = input("Escolha uma opção: ")
 
-while True:
-    opcao = menu_inicial()
+        if opcao == "1":
+            velocidade()
+        elif opcao == "2":
+            umidade()
+        elif opcao == "3":
+            temperatura()
+        elif opcao == "4":
+            iniciar_simulador_viagem()
+        elif opcao == "5":
+            print("Saindo...")
+            break
+        else:
+            print("Opção inválida. Tente novamente.")
 
-    if opcao == 1:
-        total_hotel = encontrar_hotel()
-    elif opcao == 2:
-        total_passagem = encontrar_passagem()
-    elif opcao == 3:
-        total_transporte = simular_transporte()
-    elif opcao == 4:
-        total_ingresso = simular_ingressos()
-    elif opcao == 5:
-        exibir_total(total_hotel, total_passagem, total_transporte, total_ingresso)
-    elif opcao == 6:
-        print("Saindo do programa...")
-        break
+
+# Executar o programa
+menu_principal()
