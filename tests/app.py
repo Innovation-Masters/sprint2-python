@@ -6,15 +6,12 @@ import time
 # Funções para requisitar dados da API de velocidade, umidade e temperatura
 def obter_dados(api_url, atributo):
     """
-    Faz uma requisição GET para obter dados de um atributo (velocidade, umidade ou temperatura)
-    a partir da URL fornecida da API. Retorna o valor do atributo ou None em caso de erro.
+    Faz uma requisição GET para obter dados de um atributo específico de uma API e exibe o valor atual.
 
-    Parâmetros:
-    api_url (str): A URL da API para requisitar os dados.
-    atributo (str): O nome do atributo sendo requisitado (velocidade, umidade, temperatura).
-
-    Retorno:
-    valor (int/float): O valor do atributo retornado pela API ou None em caso de erro.
+    :param api_url: str: A URL da API para onde a requisição será enviada.
+    :param atributo: str: O nome do atributo que está sendo requisitado (ex: "velocidade", "umidade", "temperatura").
+    
+    :return: O valor do atributo obtido na resposta da API, ou None em caso de erro.
     """
     try:
         headers = {
@@ -34,30 +31,29 @@ def obter_dados(api_url, atributo):
 
 def velocidade():
     """
-    Requisita e exibe a velocidade atual a partir da API.
+    Obtém a velocidade atual a partir da API e a retorna.
 
-    Retorno:
-    valor (int/float): O valor da velocidade ou None em caso de erro.
+    :return: O valor da velocidade atual, ou None se ocorrer um erro.
     """
-    return obter_dados("http://172.201.112.163:1026/v2/entities/urn:ngsi-ld:Iot:003/attrs/speed", "velocidade")
+    return obter_dados("http://{ip}/v2/entities/urn:ngsi-ld:Iot:003/attrs/speed", "velocidade")
+
 
 def umidade():
     """
-    Requisita e exibe a umidade atual a partir da API.
+    Obtém a umidade atual a partir da API e a retorna.
 
-    Retorno:
-    valor (int/float): O valor da umidade ou None em caso de erro.
+    :return: O valor da umidade atual, ou None se ocorrer um erro.
     """
-    return obter_dados("http://172.201.112.163:1026/v2/entities/urn:ngsi-ld:Iot:003/attrs/humidity", "umidade")
+    return obter_dados("http://{ip}/v2/entities/urn:ngsi-ld:Iot:003/attrs/humidity", "umidade")
+
 
 def temperatura():
     """
-    Requisita e exibe a temperatura atual a partir da API.
+    Obtém a temperatura atual a partir da API e a retorna.
 
-    Retorno:
-    valor (int/float): O valor da temperatura ou None em caso de erro.
+    :return: O valor da temperatura atual, ou None se ocorrer um erro.
     """
-    return obter_dados("http://172.201.112.163:1026/v2/entities/urn:ngsi-ld:Iot:003/attrs/temperature", "temperatura")
+    return obter_dados("http://{ip}/v2/entities/urn:ngsi-ld:Iot:003/attrs/temperature", "temperatura")
 
 
 # Função para o simulador de viagens da Fórmula E
@@ -75,21 +71,23 @@ destinos = [
 
 def sortear_destino():
     """
-    Sorteia e retorna um destino de corrida da Fórmula E a partir da lista de destinos.
+    Sorteia um destino aleatório dentro da lista simulando um possível local de corrida 
 
-    Retorno:
-    destino (str): O destino sorteado.
+    :retur: A string contendo um destino para a viagem
     """
     return random.choice(destinos)
 
 def solicitar_preferencias():
     """
-    Solicita as preferências do usuário para hospedagem e passagem, e retorna os preços base
-    dessas escolhas.
+    Solicita as preferências do usuário para hotéis e passagens.
 
-    Retorno:
-    hotel_preco_base (int): O preço base do hotel com base nas preferências do usuário.
-    passagem_preco_base (int): O preço base da passagem com base nas preferências do usuário.
+    Pergunta ao usuário se ele prefere hotéis mais baratos ou mais luxuosos
+    e se prefere passagens mais econômicas ou mais confortáveis. Com base
+    nas respostas, define os preços base simulados para hotéis e passagens.
+
+    :return: tuple: Um tupla contendo o preço base do hotel e o preço base da passagem.
+                     O primeiro elemento é o preço do hotel (int) e o segundo elemento
+                     é o preço da passagem (int).
     """
     while True:
         try:
@@ -123,8 +121,13 @@ def solicitar_preferencias():
 
 def iniciar_simulador_viagem():
     """
-    Inicia o simulador de viagem, solicita as preferências do usuário, e calcula os custos
-    de hotel, passagem, transporte e ingresso. Exibe o total de gastos ao final.
+    Inicia o simulador de viagem para a corrida de Fórmula E.
+
+    Esta função sorteia um destino, exibe informações sobre a corrida, solicita as
+    preferências do usuário para hotéis e passagens, simula o transporte e os ingressos,
+    e exibe o custo total da viagem.
+
+    :return: None
     """
     destino = sortear_destino()
     print("="*50)
@@ -146,13 +149,16 @@ def iniciar_simulador_viagem():
 # Funções para encontrar hotel, passagem, transporte e ingressos
 def encontrar_hotel(preco_base):
     """
-    Calcula o custo total da hospedagem com base no número de dias fornecido pelo usuário.
+    Solicita ao usuário o número de dias de hospedagem e calcula o custo total.
 
-    Parâmetros:
-    preco_base (int): O preço base do hotel.
+    A função pede ao usuário para informar quantos dias ele deseja se hospedar e
+    calcula o custo total com base no preço base fornecido. Em caso de entrada inválida,
+    a função solicitará uma nova tentativa.
 
-    Retorno:
-    total (float): O custo total da hospedagem.
+    :param preco_base: O preço base da diária do hotel.
+    :type preco_base: float
+    :return: O custo total da hospedagem.
+    :rtype: float
     """
     while True:
         try:
@@ -167,13 +173,16 @@ def encontrar_hotel(preco_base):
 
 def encontrar_passagem(preco_base):
     """
-    Calcula o custo total da passagem com base na classe escolhida pelo usuário.
+    Solicita ao usuário a escolha da classe da passagem e calcula o custo total.
 
-    Parâmetros:
-    preco_base (int): O preço base da passagem.
+    A função pede ao usuário para escolher a classe da passagem (econômica, executiva ou primeira)
+    e calcula o custo total com base no preço base fornecido. Em caso de entrada inválida,
+    a função solicitará uma nova tentativa.
 
-    Retorno:
-    preco (float): O custo total da passagem (ida e volta).
+    :param preco_base: O preço base da passagem econômica.
+    :type preco_base: float
+    :return: O custo total da passagem.
+    :rtype: float
     """
     while True:
         try:
@@ -193,11 +202,13 @@ def encontrar_passagem(preco_base):
 
 def simular_transporte():
     """
-    Calcula o custo total do transporte com base no tipo de transporte e número de dias
-    fornecido pelo usuário.
+    Solicita ao usuário a escolha do meio de transporte e calcula o custo total.
 
-    Retorno:
-    total (float): O custo total do transporte.
+    A função pede ao usuário para escolher entre três meios de transporte (carro, transporte público ou táxi)
+    e solicita o número de dias de utilização. Em caso de entrada inválida, a função solicitará uma nova tentativa.
+
+    :return: O custo total do transporte.
+    :rtype: float
     """
     while True:
         try:
@@ -224,10 +235,13 @@ def simular_transporte():
 
 def simular_ingressos():
     """
-    Calcula o custo total dos ingressos com base na categoria escolhida pelo usuário.
+    Solicita ao usuário a escolha da categoria do ingresso e calcula o custo total.
 
-    Retorno:
-    preco (float): O custo total dos ingressos.
+    A função pede ao usuário para escolher entre três categorias de ingressos (pista, arquibancada ou VIP).
+    Em caso de entrada inválida, a função solicitará uma nova tentativa.
+
+    :return: O custo do ingresso.
+    :rtype: float
     """
     while True:
         try:
@@ -246,18 +260,61 @@ def simular_ingressos():
             print(f"Erro: {e}. Tente novamente.")
 
 
-# Função para calcular e exibir o total de gastos
+# Função para calcular e exibir total de gastos
 def exibir_total(hotel, passagem, transporte, ingresso):
     """
-    Calcula e exibe o total dos gastos com hospedagem, passagem, transporte e ingresso.
+    Calcula e exibe o total de gastos com a viagem.
 
-    Parâmetros:
-    hotel (float): O custo total da hospedagem.
-    passagem (float): O custo total da passagem.
-    transporte (float): O custo total do transporte.
-    ingresso (float): O custo total do ingresso.
+    A função soma os custos de hotel, passagem, transporte e ingresso,
+    e exibe o valor total de gastos.
+
+    :param hotel: Custo total da hospedagem.
+    :type hotel: float
+    :param passagem: Custo total das passagens.
+    :type passagem: float
+    :param transporte: Custo total do transporte.
+    :type transporte: float
+    :param ingresso: Custo total dos ingressos.
+    :type ingresso: float
     """
     total = hotel + passagem + transporte + ingresso
-    print("="*50)
-    print(f"Total estimado da viagem: R${total:.2f}")
-    print("="*50)
+    print(f"\nTotal de gastos: R${total:.2f}")
+
+
+# Menu principal
+def menu_principal():
+    """
+    Exibe o menu principal do programa e gerencia a navegação entre as opções.
+
+    O menu oferece opções para visualizar dados de velocidade, umidade e temperatura,
+    além de iniciar o simulador de viagem ou sair do programa. O loop continua até
+    que o usuário escolha sair.
+
+    :return: None
+    """
+    while True:
+        print("\nMENU PRINCIPAL")
+        print("1. Visualizar Velocidade")
+        print("2. Visualizar Umidade")
+        print("3. Visualizar Temperatura")
+        print("4. Simulador de Viagem")
+        print("5. Sair")
+        opcao = input("Escolha uma opção: ")
+
+        if opcao == "1":
+            velocidade()
+        elif opcao == "2":
+            umidade()
+        elif opcao == "3":
+            temperatura()
+        elif opcao == "4":
+            iniciar_simulador_viagem()
+        elif opcao == "5":
+            print("Saindo...")
+            break
+        else:
+            print("Opção inválida. Tente novamente.")
+
+
+# Executar o programa
+menu_principal()
