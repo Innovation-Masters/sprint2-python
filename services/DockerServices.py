@@ -1,4 +1,6 @@
+# Bibliotecas
 from abc import ABC, abstractmethod
+
 
 class DockerServices(ABC):
     def __init__(self, ip: str, porta: int, serviceName: str):
@@ -12,6 +14,7 @@ class DockerServices(ABC):
         :return: str
         """
         return f"IP e porta de  do serviço {self.serviceName}: {self.ip}:{self.porta} \n"
+
 
 class ServiceBase(DockerServices):
     def __init__(self, ip: str, porta: int, serviceName: str, graphUrl=None):
