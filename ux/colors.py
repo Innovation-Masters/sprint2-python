@@ -5,6 +5,7 @@ YELLOW = "\033[33m"
 BOLD = "\033[1m"
 RESET = "\033[0m"
 
+
 # Função para imprimir texto de erro
 def errorText(text: str) -> str:
     """
@@ -14,6 +15,7 @@ def errorText(text: str) -> str:
     """
     return f"{BOLD}{RED}{text}{RESET}"
 
+
 def greenText(text: str) -> str:
     """
     Função para imprimir textos relaiconados a destaque, exemplo: sucesso ao conectar-se
@@ -22,6 +24,7 @@ def greenText(text: str) -> str:
     """
     return f"{BOLD}{GREEN}{text}{RESET}"
 
+
 def yellowText(text: str) -> str:
     """
     Função para imprimir textos relaiconados a destaque, exemplo: escolhas de opção
@@ -29,3 +32,7 @@ def yellowText(text: str) -> str:
     :return: O texto com a cor convertida
     """
     return f"{BOLD}{YELLOW}{text}{RESET}"
+
+
+def divider():
+    print("=-" * 22)
