@@ -2,7 +2,7 @@
 import os
 
 # Metodo para a execução do painel
-from functions.panel import main
+from panel import main
 
 # Limpa o prompt de comando para uma melhor visualização dos dados
 os.system("cls")
