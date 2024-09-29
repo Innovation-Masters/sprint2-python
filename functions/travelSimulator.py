@@ -18,7 +18,7 @@ def sortear_destino():
     """
     Sorteia um destino aleatório dentro da lista simulando um possível local de corrida 
 
-    :retur: A string contendo um destino para a viagem
+    :return: A string contendo um destino para a viagem
     """
     return random.choice(destinos)
 
