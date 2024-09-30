@@ -1,7 +1,3 @@
-Aqui está um exemplo detalhado de um README que pode impressionar e cobrir todos os aspectos importantes do seu projeto:
-
----
-
 # Projeto Sprint 2: Sistema de Monitoramento e Simulação de Viagens
 
 ## Índice
