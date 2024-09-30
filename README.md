@@ -70,9 +70,10 @@ Abaixo está a organização das pastas e arquivos do projeto:
 - Python 3.8+
 - Docker (para gerenciamento de serviços containerizados)
 - Ferramentas de integração com ESP32 (opcional para coleta de dados físicos)
+- Criar arquivo .env na pasta raíz do projeto com uma variável contendo o IP utilizado no projeto 
 
 ## Funcionalidades
-- **Coleta de Dados em Tempo Real**: O sistema se conecta a sensores IoT via MQTT e coleta dados de umidade, luminosidade e temperatura.
+- **Coleta de Dados em Tempo Real**: O sistema se conecta a sensores IoT via MQTT e coleta dados de umidade, velocidade e temperatura.
 - **Simulação de Viagem**: Os usuários podem escolher opções de viagem para eventos de Fórmula E, com a possibilidade de ajustar parâmetros como localização de hotéis e preços.
 - **Interface Interativa**: Um painel de controle visualiza dados coletados e oferece uma interface de usuário simples e intuitiva.
 - **Integração com Serviços Externos**: Conexões estabelecidas com Orion Context Broker e STH-Comet para manipulação e armazenamento de dados históricos.
@@ -86,4 +87,4 @@ Abaixo está a organização das pastas e arquivos do projeto:
 ## Detalhes Técnicos
 - **MQTT**: Usamos o protocolo MQTT para coleta de dados IoT. A integração é realizada através do cliente Eclipse Paho.
 - **Docker**: Os serviços de backend como o Orion Context Broker e o STH-Comet estão containerizados para facilitar a implantação.
-- **Integração ESP32**: Um ESP32 simulado coleta dados ambientais e os envia ao sistema por meio de requisições HTTP.
+- **Integração ESP32**: Um ESP32 simulado coleta dados ambientais e os envia ao sistema por meio de requisições MQTT.
