@@ -74,33 +74,6 @@ Abaixo está a organização das pastas e arquivos do projeto:
 - Python 3.8+
 - Docker (para gerenciamento de serviços containerizados)
 - Ferramentas de integração com ESP32 (opcional para coleta de dados físicos)
-- Bibliotecas necessárias estão listadas no arquivo `requirements.txt`
-
-### Passos para Instalação
-1. Clone o repositório:
-   ```bash
-   git clone https://github.com/seu-usuario/seu-repositorio.git
-   ```
-
-2. Entre no diretório do projeto:
-   ```bash
-   cd seu-repositorio
-   ```
-
-3. Instale as dependências:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-4. Configure o Docker para os serviços MQTT e STH:
-   ```bash
-   docker-compose up
-   ```
-
-5. Execute o projeto:
-   ```bash
-   python global/main.py
-   ```
 
 ## Funcionalidades
 - **Coleta de Dados em Tempo Real**: O sistema se conecta a sensores IoT via MQTT e coleta dados de umidade, luminosidade e temperatura.
@@ -109,7 +82,7 @@ Abaixo está a organização das pastas e arquivos do projeto:
 - **Integração com Serviços Externos**: Conexões estabelecidas com Orion Context Broker e STH-Comet para manipulação e armazenamento de dados históricos.
 
 ## Guia de Uso
-1. Ao iniciar o sistema com `python global/main.py`, será aberto o painel de controle.
+1. Ao iniciar o sistema, será aberto o painel de controle.
 2. No painel, você pode visualizar dados em tempo real e iniciar a simulação de viagens.
 3. Na aba "Simulação de Viagem", escolha o evento de Fórmula E desejado, selecione as opções de viagem (hotel e passagem) e confirme a simulação.
 4. Para ver os dados históricos coletados, utilize o painel de análise com integração STH-Comet.
@@ -118,9 +91,3 @@ Abaixo está a organização das pastas e arquivos do projeto:
 - **MQTT**: Usamos o protocolo MQTT para coleta de dados IoT. A integração é realizada através do cliente Eclipse Paho.
 - **Docker**: Os serviços de backend como o Orion Context Broker e o STH-Comet estão containerizados para facilitar a implantação.
 - **Integração ESP32**: Um ESP32 simulado coleta dados ambientais e os envia ao sistema por meio de requisições HTTP.
-
-## Contribuições
-Aceitamos contribuições via pull requests. Por favor, siga as orientações de estilo de código descritas no `CONTRIBUTING.md`.
-
-## Licença
-Este projeto está licenciado sob a licença MIT. Para mais detalhes, consulte o arquivo `LICENSE`.
