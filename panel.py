@@ -4,7 +4,6 @@ from dotenv import load_dotenv
 
 # Classes
 from services.inheritances.AgentMqtt import AgentMqtt
-from services.inheritances.EclipseMQTT import EclipseMQTT
 from services.inheritances.Orion import Orion
 from services.inheritances.Sth import Sth
 
@@ -22,7 +21,6 @@ dotenv_ip = os.getenv("IP")
 
 # Instancia de cada serviço
 agentMqtt = AgentMqtt(dotenv_ip)
-eclipseMqtt = EclipseMQTT(dotenv_ip)
 orion = Orion(dotenv_ip)
 sth = Sth(dotenv_ip)
 

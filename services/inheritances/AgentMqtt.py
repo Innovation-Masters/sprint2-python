@@ -14,7 +14,6 @@ class AgentMqtt(ServiceBase):
         Esse metodo é utilizado para retornar o status do serviço selecionado
         :return: str
         """
-        print(f"{self.ip}:{self.porta}")
         url = f"http://{self.ip}:{self.porta}/iot/about"
 
         payload = ""
