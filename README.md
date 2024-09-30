@@ -124,7 +124,3 @@ Aceitamos contribuições via pull requests. Por favor, siga as orientações de
 
 ## Licença
 Este projeto está licenciado sob a licença MIT. Para mais detalhes, consulte o arquivo `LICENSE`.
-
----
-
-Esse README fornece uma visão detalhada e organizada do seu projeto, cobrindo todos os aspectos relevantes para demonstrar domínio sobre a solução e sua implementação.
